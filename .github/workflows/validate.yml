@@ -1,0 +1,30 @@
+name: Validate submission
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - run: python -m pip install -r requirements.txt
+      - run: python -m pytest -q
+      - run: make evaluate
+      - run: docker build -t privacy-fl-challenge .
+      - name: Run standard entry point without a network
+        run: >-
+          docker run --rm --network none --cpus 4 --memory 16g
+          -v "$PWD/outputs:/outputs" privacy-fl-challenge
+          --train data/train.jsonl --input data/validation_inputs.jsonl
+          --output /outputs/docker_predictions.jsonl --artifacts-dir /outputs/docker_artifacts
+      - name: Evaluate container predictions
+        run: >-
+          python evaluator/evaluate.py
+          --inputs data/validation_inputs.jsonl
+          --ground-truth data/validation_ground_truth.jsonl
+          --predictions outputs/docker_predictions.jsonl
+          --report outputs/docker_report.json
