@@ -1,0 +1,146 @@
+{
+  "mechanism": "Pairwise additive masking of fixed-point weighted client updates",
+  "implementation_status": "Working arithmetic prototype with idealized private setup, in one process",
+  "protected_asset": "Each hospital's quantized model update within a single aggregation round",
+  "adversary": "Honest-but-curious aggregation server, optionally colluding with one of three clients",
+  "trust_assumptions": [
+    "At least two participating clients do not collude with the server",
+    "Private authenticated pairwise setup and uncompromised client randomness are assumed",
+    "The simulator holding setup masks is trusted and outside the adversary's view",
+    "Every selected client participates and follows the protocol with correct public counts",
+    "A fresh independent mask is used for every pair, coordinate, and round"
+  ],
+  "configuration": {
+    "modulus": 2305843009213693951,
+    "fixed_point_scale": 100000000,
+    "public_max_absolute_update": 1000.0,
+    "randomness": "secrets.randbelow, backed by operating-system cryptographic randomness",
+    "numeric_encoding": "round(scale * client_count * update), with exact rational rounding",
+    "message_dtype": "uint64",
+    "differential_privacy_epsilon": null,
+    "differential_privacy_delta": null
+  },
+  "privacy_claim": "Under ideal private uniform pairwise masks, masked messages reveal no additional information about individual encoded updates beyond their aggregate and the colluders' own information. This is a conditional arithmetic claim, not a deployment guarantee.",
+  "utility_and_cost": {
+    "quantization_error_bound_per_coordinate": "num_clients / (2 * scale * total_sample_count), plus float64 decoding roundoff",
+    "complexity": "O(num_clients^2 * num_parameters) setup; O(num_clients * num_parameters) aggregation",
+    "message_cost": "8 bytes per model coordinate per client, plus public counts and setup costs",
+    "empirical_comparison": "The training experiment adds measured plain-versus-masked model and runtime comparisons"
+  },
+  "remaining_attack_surface": [
+    "No process isolation: a user controlling this simulator can read all client state and masks",
+    "No key exchange, authenticated transport, secret erasure, replay defense, or dropout recovery",
+    "No protection against a malicious server, malicious clients, poisoning, or false sample counts",
+    "Server collusion with all but one client reveals the remaining update from the aggregate",
+    "Aggregates and final predictions may still permit membership or attribute inference",
+    "Repeated aggregates, auxiliary knowledge, and very small silos can expose information",
+    "Hospital sample counts and model dimensions are public metadata",
+    "No differential privacy, patient-level privacy guarantee, or clinical certification"
+  ],
+  "reproducibility": "Masks and timings vary; exact modular cancellation makes predictions independent of masks",
+  "reference": {
+    "title": "Bonawitz et al., Practical Secure Aggregation for Privacy-Preserving Machine Learning, CCS 2017",
+    "url": "https://acmccs.github.io/papers/p1175-bonawitzA.pdf",
+    "relationship": "Lemma 6.1 motivates the masking arithmetic; the full paper's cryptographic and dropout protocol is not implemented"
+  },
+  "empirical_comparison": {
+    "seed_runs": [
+      {
+        "seed": 7,
+        "plain_training_seconds": 0.030643499998404877,
+        "secure_training_seconds": 0.09596619999865652,
+        "max_weight_difference": 7.649099686979355e-10,
+        "max_probability_difference": 2.1877677447434962e-10
+      },
+      {
+        "seed": 19,
+        "plain_training_seconds": 0.030179400000633905,
+        "secure_training_seconds": 0.10166969999772846,
+        "max_weight_difference": 7.977752902732504e-10,
+        "max_probability_difference": 3.496413714110247e-10
+      },
+      {
+        "seed": 43,
+        "plain_training_seconds": 0.030227700000978075,
+        "secure_training_seconds": 0.1039770999996108,
+        "max_weight_difference": 6.926175188937123e-10,
+        "max_probability_difference": 3.444852181289093e-10
+      }
+    ],
+    "plain_validation": {
+      "overall": {
+        "n": 31,
+        "prevalence": 0.3225806451612903,
+        "roc_auc": 0.7238095238095238,
+        "average_precision": 0.6347892458418773,
+        "brier_score": 0.17576710422846525,
+        "log_loss": 0.5344019650245936
+      },
+      "by_site": {
+        "BERLIN_NODE": {
+          "n": 11,
+          "prevalence": 0.36363636363636365,
+          "roc_auc": 0.2857142857142857,
+          "average_precision": 0.4784090909090909,
+          "brier_score": 0.2732395135322434,
+          "log_loss": 0.756063451668026
+        },
+        "CHENNAI_NODE": {
+          "n": 10,
+          "prevalence": 0.4,
+          "roc_auc": 0.9166666666666667,
+          "average_precision": 0.8875,
+          "brier_score": 0.13739288332495025,
+          "log_loss": 0.4462334822937909
+        },
+        "HYDERABAD_NODE": {
+          "n": 10,
+          "prevalence": 0.2,
+          "roc_auc": 1.0,
+          "average_precision": 1.0,
+          "brier_score": 0.10692167489782416,
+          "log_loss": 0.37874281244762076
+        }
+      }
+    },
+    "secure_validation": {
+      "overall": {
+        "n": 31,
+        "prevalence": 0.3225806451612903,
+        "roc_auc": 0.7238095238095238,
+        "average_precision": 0.6347892458418773,
+        "brier_score": 0.17576710424020722,
+        "log_loss": 0.5344019650524598
+      },
+      "by_site": {
+        "BERLIN_NODE": {
+          "n": 11,
+          "prevalence": 0.36363636363636365,
+          "roc_auc": 0.2857142857142857,
+          "average_precision": 0.4784090909090909,
+          "brier_score": 0.2732395135085964,
+          "log_loss": 0.7560634516194171
+        },
+        "CHENNAI_NODE": {
+          "n": 10,
+          "prevalence": 0.4,
+          "roc_auc": 0.9166666666666667,
+          "average_precision": 0.8875,
+          "brier_score": 0.13739288338381392,
+          "log_loss": 0.44623348241650795
+        },
+        "HYDERABAD_NODE": {
+          "n": 10,
+          "prevalence": 0.2,
+          "roc_auc": 1.0,
+          "average_precision": 1.0,
+          "brier_score": 0.10692167490137258,
+          "log_loss": 0.3787428124647589
+        }
+      }
+    },
+    "final_secure_training_seconds": 0.09617630000138888
+  },
+  "additional_disclosures": "Offline diagnostics collect held-out labels/probabilities centrally for exact AUC/AP. This is outside the privacy claim and would need a separate protected evaluation protocol in deployment.",
+  "training_diagnostics": "Scalar training objectives and site aggregate statistics are released without DP and are outside the masking guarantee."
+}

@@ -1,0 +1,895 @@
+{
+  "implementation": "sample_weighted_fedavg_logistic_regression",
+  "random_seeds": [
+    7,
+    19,
+    43
+  ],
+  "features": [
+    "intercept",
+    "age_years",
+    "male",
+    "prior_admissions_12m",
+    "length_of_stay_days",
+    "emergency_admission",
+    "atrial_fibrillation",
+    "heart_failure",
+    "hypertension",
+    "type_2_diabetes",
+    "chronic_kidney_disease",
+    "coronary_artery_disease",
+    "acute_coronary_syndrome",
+    "pneumonia",
+    "copd",
+    "heart_rate_bpm",
+    "heart_rate_bpm_missing",
+    "systolic_bp_mmhg",
+    "systolic_bp_mmhg_missing",
+    "creatinine_mg_dl",
+    "creatinine_mg_dl_missing",
+    "hemoglobin_g_dl",
+    "hemoglobin_g_dl_missing",
+    "lvef_percent",
+    "lvef_percent_missing",
+    "smoking_current",
+    "smoking_former",
+    "smoking_missing"
+  ],
+  "preprocessing": "Fixed scales and vocabulary; missing numeric values map to center plus missing indicator; no fitted pooled preprocessing.",
+  "hyperparameters": {
+    "rounds": 200,
+    "local_epochs": 2,
+    "learning_rate": 0.15,
+    "l2": 0.05
+  },
+  "selection": "Optimizer hyperparameters fixed before public validation scoring. Site indicators removed after privacy review; terminology refined through public error analysis. No validation-label access in this entry point.",
+  "validation_source": "25% site-stratified holdout from --train; random_state=2026. Public validation labels are not read.",
+  "split_sizes": {
+    "BERLIN_NODE": {
+      "train": 31,
+      "validation": 11
+    },
+    "CHENNAI_NODE": {
+      "train": 29,
+      "validation": 10
+    },
+    "HYDERABAD_NODE": {
+      "train": 29,
+      "validation": 10
+    }
+  },
+  "local_models": {
+    "algorithm": "L2 logistic regression per site",
+    "validation": {
+      "overall": {
+        "n": 31,
+        "prevalence": 0.3225806451612903,
+        "roc_auc": 0.7000000000000001,
+        "average_precision": 0.542339466089466,
+        "brier_score": 0.2014920067201019,
+        "log_loss": 0.5881310409127969
+      },
+      "by_site": {
+        "BERLIN_NODE": {
+          "n": 11,
+          "prevalence": 0.36363636363636365,
+          "roc_auc": 0.32142857142857145,
+          "average_precision": 0.33138528138528134,
+          "brier_score": 0.3359030563692434,
+          "log_loss": 0.9154933438047329
+        },
+        "CHENNAI_NODE": {
+          "n": 10,
+          "prevalence": 0.4,
+          "roc_auc": 0.7916666666666667,
+          "average_precision": 0.7333333333333333,
+          "brier_score": 0.17260917403472978,
+          "log_loss": 0.5132323782216438
+        },
+        "HYDERABAD_NODE": {
+          "n": 10,
+          "prevalence": 0.2,
+          "roc_auc": 1.0,
+          "average_precision": 1.0,
+          "brier_score": 0.08252268479141833,
+          "log_loss": 0.302931170422821
+        }
+      }
+    },
+    "routing": "Each validation case uses its own site's local model."
+  },
+  "federated_model": {
+    "algorithm": "FedAvg",
+    "rounds": 200,
+    "local_epochs": 2,
+    "optimizer": "full-batch gradient descent",
+    "client_weighting": "number of local training cases / total training cases",
+    "validation": {
+      "overall": {
+        "n": 31,
+        "prevalence": 0.3225806451612903,
+        "roc_auc": 0.7238095238095238,
+        "average_precision": 0.6347892458418773,
+        "brier_score": 0.17576710422846525,
+        "log_loss": 0.5344019650245936
+      },
+      "by_site": {
+        "BERLIN_NODE": {
+          "n": 11,
+          "prevalence": 0.36363636363636365,
+          "roc_auc": 0.2857142857142857,
+          "average_precision": 0.4784090909090909,
+          "brier_score": 0.2732395135322434,
+          "log_loss": 0.756063451668026
+        },
+        "CHENNAI_NODE": {
+          "n": 10,
+          "prevalence": 0.4,
+          "roc_auc": 0.9166666666666667,
+          "average_precision": 0.8875,
+          "brier_score": 0.13739288332495025,
+          "log_loss": 0.4462334822937909
+        },
+        "HYDERABAD_NODE": {
+          "n": 10,
+          "prevalence": 0.2,
+          "roc_auc": 1.0,
+          "average_precision": 1.0,
+          "brier_score": 0.10692167489782416,
+          "log_loss": 0.37874281244762076
+        }
+      }
+    }
+  },
+  "centralized_model": {
+    "algorithm": "L2 logistic regression",
+    "validation": {
+      "overall": {
+        "n": 31,
+        "prevalence": 0.3225806451612903,
+        "roc_auc": 0.7285714285714285,
+        "average_precision": 0.6411528822055138,
+        "brier_score": 0.17565020137072018,
+        "log_loss": 0.5341473329528089
+      },
+      "by_site": {
+        "BERLIN_NODE": {
+          "n": 11,
+          "prevalence": 0.36363636363636365,
+          "roc_auc": 0.2857142857142857,
+          "average_precision": 0.4784090909090909,
+          "brier_score": 0.27302966146846686,
+          "log_loss": 0.7555631676301686
+        },
+        "CHENNAI_NODE": {
+          "n": 10,
+          "prevalence": 0.4,
+          "roc_auc": 0.9166666666666667,
+          "average_precision": 0.8875,
+          "brier_score": 0.13731412517392008,
+          "log_loss": 0.4460761412061996
+        },
+        "HYDERABAD_NODE": {
+          "n": 10,
+          "prevalence": 0.2,
+          "roc_auc": 1.0,
+          "average_precision": 1.0,
+          "brier_score": 0.10686887145999897,
+          "log_loss": 0.37866110655432295
+        }
+      }
+    },
+    "fairness": "Same features, split, objective, seed, learning rate and 400 gradient steps; pooled gradient differs from multi-step local FedAvg."
+  },
+  "seed_runs": [
+    {
+      "seed": 7,
+      "local": {
+        "overall": {
+          "n": 31,
+          "prevalence": 0.3225806451612903,
+          "roc_auc": 0.7000000000000001,
+          "average_precision": 0.542339466089466,
+          "brier_score": 0.2014920067201019,
+          "log_loss": 0.5881310409127969
+        },
+        "by_site": {
+          "BERLIN_NODE": {
+            "n": 11,
+            "prevalence": 0.36363636363636365,
+            "roc_auc": 0.32142857142857145,
+            "average_precision": 0.33138528138528134,
+            "brier_score": 0.3359030563692434,
+            "log_loss": 0.9154933438047329
+          },
+          "CHENNAI_NODE": {
+            "n": 10,
+            "prevalence": 0.4,
+            "roc_auc": 0.7916666666666667,
+            "average_precision": 0.7333333333333333,
+            "brier_score": 0.17260917403472978,
+            "log_loss": 0.5132323782216438
+          },
+          "HYDERABAD_NODE": {
+            "n": 10,
+            "prevalence": 0.2,
+            "roc_auc": 1.0,
+            "average_precision": 1.0,
+            "brier_score": 0.08252268479141833,
+            "log_loss": 0.302931170422821
+          }
+        }
+      },
+      "federated": {
+        "overall": {
+          "n": 31,
+          "prevalence": 0.3225806451612903,
+          "roc_auc": 0.7238095238095238,
+          "average_precision": 0.6347892458418773,
+          "brier_score": 0.17576710422846525,
+          "log_loss": 0.5344019650245936
+        },
+        "by_site": {
+          "BERLIN_NODE": {
+            "n": 11,
+            "prevalence": 0.36363636363636365,
+            "roc_auc": 0.2857142857142857,
+            "average_precision": 0.4784090909090909,
+            "brier_score": 0.2732395135322434,
+            "log_loss": 0.756063451668026
+          },
+          "CHENNAI_NODE": {
+            "n": 10,
+            "prevalence": 0.4,
+            "roc_auc": 0.9166666666666667,
+            "average_precision": 0.8875,
+            "brier_score": 0.13739288332495025,
+            "log_loss": 0.4462334822937909
+          },
+          "HYDERABAD_NODE": {
+            "n": 10,
+            "prevalence": 0.2,
+            "roc_auc": 1.0,
+            "average_precision": 1.0,
+            "brier_score": 0.10692167489782416,
+            "log_loss": 0.37874281244762076
+          }
+        }
+      },
+      "centralized": {
+        "overall": {
+          "n": 31,
+          "prevalence": 0.3225806451612903,
+          "roc_auc": 0.7285714285714285,
+          "average_precision": 0.6411528822055138,
+          "brier_score": 0.17565020137072018,
+          "log_loss": 0.5341473329528089
+        },
+        "by_site": {
+          "BERLIN_NODE": {
+            "n": 11,
+            "prevalence": 0.36363636363636365,
+            "roc_auc": 0.2857142857142857,
+            "average_precision": 0.4784090909090909,
+            "brier_score": 0.27302966146846686,
+            "log_loss": 0.7555631676301686
+          },
+          "CHENNAI_NODE": {
+            "n": 10,
+            "prevalence": 0.4,
+            "roc_auc": 0.9166666666666667,
+            "average_precision": 0.8875,
+            "brier_score": 0.13731412517392008,
+            "log_loss": 0.4460761412061996
+          },
+          "HYDERABAD_NODE": {
+            "n": 10,
+            "prevalence": 0.2,
+            "roc_auc": 1.0,
+            "average_precision": 1.0,
+            "brier_score": 0.10686887145999897,
+            "log_loss": 0.37866110655432295
+          }
+        }
+      },
+      "secure_federated": {
+        "overall": {
+          "n": 31,
+          "prevalence": 0.3225806451612903,
+          "roc_auc": 0.7238095238095238,
+          "average_precision": 0.6347892458418773,
+          "brier_score": 0.17576710424020722,
+          "log_loss": 0.5344019650524598
+        },
+        "by_site": {
+          "BERLIN_NODE": {
+            "n": 11,
+            "prevalence": 0.36363636363636365,
+            "roc_auc": 0.2857142857142857,
+            "average_precision": 0.4784090909090909,
+            "brier_score": 0.2732395135085964,
+            "log_loss": 0.7560634516194171
+          },
+          "CHENNAI_NODE": {
+            "n": 10,
+            "prevalence": 0.4,
+            "roc_auc": 0.9166666666666667,
+            "average_precision": 0.8875,
+            "brier_score": 0.13739288338381392,
+            "log_loss": 0.44623348241650795
+          },
+          "HYDERABAD_NODE": {
+            "n": 10,
+            "prevalence": 0.2,
+            "roc_auc": 1.0,
+            "average_precision": 1.0,
+            "brier_score": 0.10692167490137258,
+            "log_loss": 0.3787428124647589
+          }
+        }
+      },
+      "convergence": [
+        {
+          "round": 0,
+          "training_objective": 0.690235465113802
+        },
+        {
+          "round": 20,
+          "training_objective": 0.5575891285227708
+        },
+        {
+          "round": 40,
+          "training_objective": 0.5325840778477385
+        },
+        {
+          "round": 60,
+          "training_objective": 0.5237346063264825
+        },
+        {
+          "round": 80,
+          "training_objective": 0.5196467771100001
+        },
+        {
+          "round": 100,
+          "training_objective": 0.5174622930474118
+        },
+        {
+          "round": 120,
+          "training_objective": 0.5161878638420256
+        },
+        {
+          "round": 140,
+          "training_objective": 0.5153999032792088
+        },
+        {
+          "round": 160,
+          "training_objective": 0.5148929069749882
+        },
+        {
+          "round": 180,
+          "training_objective": 0.5145576308203563
+        },
+        {
+          "round": 200,
+          "training_objective": 0.5143317326141708
+        }
+      ]
+    },
+    {
+      "seed": 19,
+      "local": {
+        "overall": {
+          "n": 31,
+          "prevalence": 0.3225806451612903,
+          "roc_auc": 0.7000000000000001,
+          "average_precision": 0.542339466089466,
+          "brier_score": 0.20148783986229848,
+          "log_loss": 0.5881149347204927
+        },
+        "by_site": {
+          "BERLIN_NODE": {
+            "n": 11,
+            "prevalence": 0.36363636363636365,
+            "roc_auc": 0.32142857142857145,
+            "average_precision": 0.33138528138528134,
+            "brier_score": 0.3359249290979586,
+            "log_loss": 0.9155631677527363
+          },
+          "CHENNAI_NODE": {
+            "n": 10,
+            "prevalence": 0.4,
+            "roc_auc": 0.7916666666666667,
+            "average_precision": 0.7333333333333333,
+            "brier_score": 0.17259048901489243,
+            "log_loss": 0.513170594802696
+          },
+          "HYDERABAD_NODE": {
+            "n": 10,
+            "prevalence": 0.2,
+            "roc_auc": 1.0,
+            "average_precision": 1.0,
+            "brier_score": 0.08250439255047841,
+            "log_loss": 0.30286621830282145
+          }
+        }
+      },
+      "federated": {
+        "overall": {
+          "n": 31,
+          "prevalence": 0.3225806451612903,
+          "roc_auc": 0.7238095238095238,
+          "average_precision": 0.6347892458418773,
+          "brier_score": 0.17578781386226108,
+          "log_loss": 0.5344498604201271
+        },
+        "by_site": {
+          "BERLIN_NODE": {
+            "n": 11,
+            "prevalence": 0.36363636363636365,
+            "roc_auc": 0.2857142857142857,
+            "average_precision": 0.4784090909090909,
+            "brier_score": 0.27325760236127494,
+            "log_loss": 0.7561297537783492
+          },
+          "CHENNAI_NODE": {
+            "n": 10,
+            "prevalence": 0.4,
+            "roc_auc": 0.9166666666666667,
+            "average_precision": 0.8875,
+            "brier_score": 0.13742850728322534,
+            "log_loss": 0.44630402806719316
+          },
+          "HYDERABAD_NODE": {
+            "n": 10,
+            "prevalence": 0.2,
+            "roc_auc": 1.0,
+            "average_precision": 1.0,
+            "brier_score": 0.10693035309238152,
+            "log_loss": 0.3787478100790166
+          }
+        }
+      },
+      "centralized": {
+        "overall": {
+          "n": 31,
+          "prevalence": 0.3225806451612903,
+          "roc_auc": 0.7285714285714285,
+          "average_precision": 0.6411528822055138,
+          "brier_score": 0.17567086891996897,
+          "log_loss": 0.5341951178142337
+        },
+        "by_site": {
+          "BERLIN_NODE": {
+            "n": 11,
+            "prevalence": 0.36363636363636365,
+            "roc_auc": 0.2857142857142857,
+            "average_precision": 0.4784090909090909,
+            "brier_score": 0.27304773746573235,
+            "log_loss": 0.7556293034130228
+          },
+          "CHENNAI_NODE": {
+            "n": 10,
+            "prevalence": 0.4,
+            "roc_auc": 0.9166666666666667,
+            "average_precision": 0.8875,
+            "brier_score": 0.1373496897977775,
+            "log_loss": 0.4461465741341556
+          },
+          "HYDERABAD_NODE": {
+            "n": 10,
+            "prevalence": 0.2,
+            "roc_auc": 1.0,
+            "average_precision": 1.0,
+            "brier_score": 0.10687749264182059,
+            "log_loss": 0.37866605733564335
+          }
+        }
+      },
+      "secure_federated": {
+        "overall": {
+          "n": 31,
+          "prevalence": 0.3225806451612903,
+          "roc_auc": 0.7238095238095238,
+          "average_precision": 0.6347892458418773,
+          "brier_score": 0.17578781387084025,
+          "log_loss": 0.5344498604381623
+        },
+        "by_site": {
+          "BERLIN_NODE": {
+            "n": 11,
+            "prevalence": 0.36363636363636365,
+            "roc_auc": 0.2857142857142857,
+            "average_precision": 0.4784090909090909,
+            "brier_score": 0.27325760236868385,
+            "log_loss": 0.7561297538134507
+          },
+          "CHENNAI_NODE": {
+            "n": 10,
+            "prevalence": 0.4,
+            "roc_auc": 0.9166666666666667,
+            "average_precision": 0.8875,
+            "brier_score": 0.13742850730235284,
+            "log_loss": 0.4463040280964806
+          },
+          "HYDERABAD_NODE": {
+            "n": 10,
+            "prevalence": 0.2,
+            "roc_auc": 1.0,
+            "average_precision": 1.0,
+            "brier_score": 0.10693035309169971,
+            "log_loss": 0.3787478100670261
+          }
+        }
+      },
+      "convergence": [
+        {
+          "round": 0,
+          "training_objective": 0.6916374166389464
+        },
+        {
+          "round": 20,
+          "training_objective": 0.557758041843298
+        },
+        {
+          "round": 40,
+          "training_objective": 0.5326607511387057
+        },
+        {
+          "round": 60,
+          "training_objective": 0.523746774728129
+        },
+        {
+          "round": 80,
+          "training_objective": 0.5196330348050052
+        },
+        {
+          "round": 100,
+          "training_objective": 0.5174418800163358
+        },
+        {
+          "round": 120,
+          "training_objective": 0.5161684844587024
+        },
+        {
+          "round": 140,
+          "training_objective": 0.5153839547421419
+        },
+        {
+          "round": 160,
+          "training_objective": 0.5148806273460022
+        },
+        {
+          "round": 180,
+          "training_objective": 0.5145485108700772
+        },
+        {
+          "round": 200,
+          "training_objective": 0.5143251008324012
+        }
+      ]
+    },
+    {
+      "seed": 43,
+      "local": {
+        "overall": {
+          "n": 31,
+          "prevalence": 0.3225806451612903,
+          "roc_auc": 0.7000000000000001,
+          "average_precision": 0.542339466089466,
+          "brier_score": 0.20149915618415715,
+          "log_loss": 0.588169062192871
+        },
+        "by_site": {
+          "BERLIN_NODE": {
+            "n": 11,
+            "prevalence": 0.36363636363636365,
+            "roc_auc": 0.32142857142857145,
+            "average_precision": 0.33138528138528134,
+            "brier_score": 0.3359520149201447,
+            "log_loss": 0.9156873438078701
+          },
+          "CHENNAI_NODE": {
+            "n": 10,
+            "prevalence": 0.4,
+            "roc_auc": 0.7916666666666667,
+            "average_precision": 0.7333333333333333,
+            "brier_score": 0.17258441780175773,
+            "log_loss": 0.513171460520207
+          },
+          "HYDERABAD_NODE": {
+            "n": 10,
+            "prevalence": 0.2,
+            "roc_auc": 1.0,
+            "average_precision": 1.0,
+            "brier_score": 0.08251574995697022,
+            "log_loss": 0.30289655408903565
+          }
+        }
+      },
+      "federated": {
+        "overall": {
+          "n": 31,
+          "prevalence": 0.3225806451612903,
+          "roc_auc": 0.7238095238095238,
+          "average_precision": 0.6347892458418773,
+          "brier_score": 0.17578470362773285,
+          "log_loss": 0.5344464008430694
+        },
+        "by_site": {
+          "BERLIN_NODE": {
+            "n": 11,
+            "prevalence": 0.36363636363636365,
+            "roc_auc": 0.2857142857142857,
+            "average_precision": 0.4784090909090909,
+            "brier_score": 0.27325425061138797,
+            "log_loss": 0.7561354689653608
+          },
+          "CHENNAI_NODE": {
+            "n": 10,
+            "prevalence": 0.4,
+            "roc_auc": 0.9166666666666667,
+            "average_precision": 0.8875,
+            "brier_score": 0.13740831888999638,
+            "log_loss": 0.44625577082746865
+          },
+          "HYDERABAD_NODE": {
+            "n": 10,
+            "prevalence": 0.2,
+            "roc_auc": 1.0,
+            "average_precision": 1.0,
+            "brier_score": 0.10694458668344861,
+            "log_loss": 0.3787790559241496
+          }
+        }
+      },
+      "centralized": {
+        "overall": {
+          "n": 31,
+          "prevalence": 0.3225806451612903,
+          "roc_auc": 0.7285714285714285,
+          "average_precision": 0.6411528822055138,
+          "brier_score": 0.17566778564611468,
+          "log_loss": 0.5341916646185565
+        },
+        "by_site": {
+          "BERLIN_NODE": {
+            "n": 11,
+            "prevalence": 0.36363636363636365,
+            "roc_auc": 0.2857142857142857,
+            "average_precision": 0.4784090909090909,
+            "brier_score": 0.2730442730410909,
+            "log_loss": 0.755634654625646
+          },
+          "CHENNAI_NODE": {
+            "n": 10,
+            "prevalence": 0.4,
+            "roc_auc": 0.9166666666666667,
+            "average_precision": 0.8875,
+            "brier_score": 0.13732964993818517,
+            "log_loss": 0.4460986292024674
+          },
+          "HYDERABAD_NODE": {
+            "n": 10,
+            "prevalence": 0.2,
+            "roc_auc": 1.0,
+            "average_precision": 1.0,
+            "brier_score": 0.10689178521957014,
+            "log_loss": 0.37869741102684706
+          }
+        }
+      },
+      "secure_federated": {
+        "overall": {
+          "n": 31,
+          "prevalence": 0.3225806451612903,
+          "roc_auc": 0.7238095238095238,
+          "average_precision": 0.6347892458418773,
+          "brier_score": 0.1757847036157294,
+          "log_loss": 0.5344464008160611
+        },
+        "by_site": {
+          "BERLIN_NODE": {
+            "n": 11,
+            "prevalence": 0.36363636363636365,
+            "roc_auc": 0.2857142857142857,
+            "average_precision": 0.4784090909090909,
+            "brier_score": 0.2732542506102791,
+            "log_loss": 0.7561354689692895
+          },
+          "CHENNAI_NODE": {
+            "n": 10,
+            "prevalence": 0.4,
+            "roc_auc": 0.9166666666666667,
+            "average_precision": 0.8875,
+            "brier_score": 0.1374083188690513,
+            "log_loss": 0.44625577078045475
+          },
+          "HYDERABAD_NODE": {
+            "n": 10,
+            "prevalence": 0.2,
+            "roc_auc": 1.0,
+            "average_precision": 1.0,
+            "brier_score": 0.10694458666840297,
+            "log_loss": 0.37877905588311606
+          }
+        }
+      },
+      "convergence": [
+        {
+          "round": 0,
+          "training_objective": 0.6929604952105891
+        },
+        {
+          "round": 20,
+          "training_objective": 0.5571511386434128
+        },
+        {
+          "round": 40,
+          "training_objective": 0.5323593081769339
+        },
+        {
+          "round": 60,
+          "training_objective": 0.5236140896972146
+        },
+        {
+          "round": 80,
+          "training_objective": 0.519574321291584
+        },
+        {
+          "round": 100,
+          "training_objective": 0.5174149197428171
+        },
+        {
+          "round": 120,
+          "training_objective": 0.516155464847605
+        },
+        {
+          "round": 140,
+          "training_objective": 0.5153772985627078
+        },
+        {
+          "round": 160,
+          "training_objective": 0.5148770188739722
+        },
+        {
+          "round": 180,
+          "training_objective": 0.5145464426040439
+        },
+        {
+          "round": 200,
+          "training_objective": 0.5143238557956856
+        }
+      ]
+    }
+  ],
+  "seed_stability": {
+    "local": {
+      "brier_score": {
+        "mean": 0.20149300092218583,
+        "std": 4.673051354308056e-06
+      },
+      "log_loss": {
+        "mean": 0.5881383459420535,
+        "std": 2.2693147362831052e-05
+      }
+    },
+    "federated": {
+      "brier_score": {
+        "mean": 0.17577987390615304,
+        "std": 9.118365748789514e-06
+      },
+      "log_loss": {
+        "mean": 0.53443274209593,
+        "std": 2.1808457967658278e-05
+      }
+    },
+    "centralized": {
+      "brier_score": {
+        "mean": 0.17566295197893464,
+        "std": 9.103484746459563e-06
+      },
+      "log_loss": {
+        "mean": 0.5341780384618664,
+        "std": 2.1757793315712325e-05
+      }
+    }
+  },
+  "communication": {
+    "raw_rows_transferred_in_federated_training": false,
+    "plain_client_to_server": "Float64 model delta and sample count; scalar objective diagnostics.",
+    "secure_client_to_server": "Masked fixed-point model delta and public sample count; scalar objective diagnostics.",
+    "server_to_client": "Global coefficient vector each round.",
+    "parameters": 28,
+    "vector_bytes_per_client_per_round": 224,
+    "all_client_upload_bytes": 134400,
+    "evaluation_disclosure": "Offline diagnostics collect held-out labels/probabilities centrally for exact AUC/AP. This is outside the privacy claim and would need a separate protected evaluation protocol in deployment."
+  },
+  "non_iid_analysis": {
+    "site_statistics": {
+      "BERLIN_NODE": {
+        "n": 42,
+        "positive": 15,
+        "prevalence": 0.35714285714285715,
+        "mean_age_years": 67.83333333333333,
+        "mean_prior_admissions_12m": 0.023809523809523808,
+        "emergency_fraction": 0.5952380952380952
+      },
+      "CHENNAI_NODE": {
+        "n": 39,
+        "positive": 17,
+        "prevalence": 0.4358974358974359,
+        "mean_age_years": 59.282051282051285,
+        "mean_prior_admissions_12m": 0.2564102564102564,
+        "emergency_fraction": 0.38461538461538464
+      },
+      "HYDERABAD_NODE": {
+        "n": 39,
+        "positive": 9,
+        "prevalence": 0.23076923076923078,
+        "mean_age_years": 57.94871794871795,
+        "mean_prior_admissions_12m": 0.02564102564102564,
+        "emergency_fraction": 0.48717948717948717
+      }
+    },
+    "observation": "Site prevalence and covariates differ. Small per-site holdouts make AUC and worst-site comparisons unstable."
+  },
+  "final_model": {
+    "method": "secure FedAvg",
+    "seed": 7,
+    "n_train": 120,
+    "convergence": [
+      {
+        "round": 0,
+        "training_objective": 0.6894333603927432
+      },
+      {
+        "round": 20,
+        "training_objective": 0.5664985808273673
+      },
+      {
+        "round": 40,
+        "training_objective": 0.5435579085144231
+      },
+      {
+        "round": 60,
+        "training_objective": 0.5352445050479915
+      },
+      {
+        "round": 80,
+        "training_objective": 0.5313250454085805
+      },
+      {
+        "round": 100,
+        "training_objective": 0.5291864907525087
+      },
+      {
+        "round": 120,
+        "training_objective": 0.5279169383038073
+      },
+      {
+        "round": 140,
+        "training_objective": 0.5271228181259748
+      },
+      {
+        "round": 160,
+        "training_objective": 0.526608948902041
+      },
+      {
+        "round": 180,
+        "training_objective": 0.5262688814709054
+      },
+      {
+        "round": 200,
+        "training_objective": 0.5260404432210191
+      }
+    ],
+    "training_seconds": 0.09617630000138888
+  },
+  "limitations": [
+    "Single-process simulation, not a distributed security boundary.",
+    "No formal patient-level privacy guarantee.",
+    "Initialization seeds measure optimizer stability, not split or population uncertainty.",
+    "Only 120 synthetic training cases; no clinical validity; unseen text formats can fail."
+  ],
+  "total_runtime_seconds": 1.209066300001723
+}

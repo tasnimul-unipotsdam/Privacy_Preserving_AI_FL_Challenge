@@ -1,0 +1,56 @@
+{
+  "recorded_date": "2026-09-23",
+  "source_and_packaging_commit": "12e7510",
+  "local_environment": {
+    "os": "Windows",
+    "conda_environment": "privacy-fl",
+    "python": "3.11.16",
+    "numpy": "2.4.6",
+    "scikit_learn": "1.9.1",
+    "pytest": "9.1.1",
+    "pip_check": "No broken requirements found",
+    "tests_passed": 43,
+    "test_seconds": 8.49,
+    "submission_processing_seconds_excluding_imports": 1.21
+  },
+  "docker_environment": {
+    "os": "Linux",
+    "python": "3.11.16",
+    "image_tag": "privacy-fl-challenge:local",
+    "image_id": "sha256:6a9031d049fb768cb63ac595624a454ef3af417baa86dbe3f3d03f0604f5722f",
+    "image_size_bytes": 575958144,
+    "build_succeeded": true,
+    "runtime_network": "none",
+    "cpu_limit": 4,
+    "memory_limit": "16g",
+    "tests_passed": 43,
+    "test_seconds": 5.78,
+    "submission_processing_seconds_excluding_imports": 1.08,
+    "official_evaluator_succeeded": true
+  },
+  "candidate_verification": {
+    "reported_date": "2026-09-24",
+    "evidence_source": "Candidate-provided PowerShell terminal output",
+    "conda_environment": "privacy-fl",
+    "tests_passed": 43,
+    "test_seconds": 7.54,
+    "submission_runs": 2,
+    "predictions_per_run": 30,
+    "submission_processing_seconds_excluding_imports": [1.23, 1.19],
+    "official_evaluator_succeeded": true,
+    "deidentification_score_displayed": 1.0,
+    "structured_extraction_score_displayed": 1.0,
+    "readmission_prediction_score_displayed": 0.6968,
+    "automated_composite_displayed": 0.9242,
+    "automated_points_out_of_40_displayed": 36.97,
+    "candidate_docker_run_reported": false
+  },
+  "validation": {
+    "cases": 30,
+    "validation_messages": [],
+    "cross_platform_nlp_outputs_equal": true,
+    "cross_platform_max_probability_difference": 0.0,
+    "original_data_evaluator_and_schemas_unchanged": true,
+    "github_actions_status": "Provided; not run remotely before GitHub repository creation"
+  }
+}

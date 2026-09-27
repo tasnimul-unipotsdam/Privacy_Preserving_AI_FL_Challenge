@@ -1,0 +1,425 @@
+{
+  "purpose": "Offline public validation comparison; this script is not used by run_submission.py.",
+  "selection": "Fixed default configuration and seed 7; labels read only after all models and predictions are fitted. No tuning or calibration fitting.",
+  "training_cases": 120,
+  "validation_cases": 30,
+  "seed": 7,
+  "hyperparameters": {
+    "rounds": 200,
+    "local_epochs": 2,
+    "learning_rate": 0.15,
+    "l2": 0.05
+  },
+  "training_by_site": {
+    "BERLIN_NODE": {
+      "n": 42,
+      "positive": 15,
+      "prevalence": 0.35714285714285715,
+      "mean_age_years": 67.83333333333333,
+      "mean_prior_admissions_12m": 0.023809523809523808,
+      "emergency_fraction": 0.5952380952380952
+    },
+    "CHENNAI_NODE": {
+      "n": 39,
+      "positive": 17,
+      "prevalence": 0.4358974358974359,
+      "mean_age_years": 59.282051282051285,
+      "mean_prior_admissions_12m": 0.2564102564102564,
+      "emergency_fraction": 0.38461538461538464
+    },
+    "HYDERABAD_NODE": {
+      "n": 39,
+      "positive": 9,
+      "prevalence": 0.23076923076923078,
+      "mean_age_years": 57.94871794871795,
+      "mean_prior_admissions_12m": 0.02564102564102564,
+      "emergency_fraction": 0.48717948717948717
+    }
+  },
+  "local_routing": "Each input is predicted by the local model trained at its own site.",
+  "centralized_fairness": "Same training cases, features, objective, initialization, learning rate and number of gradient steps; only pooled versus local updates differ.",
+  "models": {
+    "local": {
+      "overall": {
+        "n": 30,
+        "prevalence": 0.2,
+        "roc_auc": 0.7361111111111112,
+        "average_precision": 0.5523809523809523,
+        "brier_score": 0.140389991497532,
+        "log_loss": 0.4529800955736574,
+        "mean_probability": 0.2995727471656797
+      },
+      "by_site": {
+        "BERLIN_NODE": {
+          "n": 10,
+          "prevalence": 0.3,
+          "roc_auc": 0.7619047619047619,
+          "average_precision": 0.5555555555555556,
+          "brier_score": 0.19191683364548548,
+          "log_loss": 0.5639127530921624
+        },
+        "CHENNAI_NODE": {
+          "n": 10,
+          "prevalence": 0.2,
+          "roc_auc": 1.0,
+          "average_precision": 1.0,
+          "brier_score": 0.0826752280856067,
+          "log_loss": 0.31172839167053457
+        },
+        "HYDERABAD_NODE": {
+          "n": 10,
+          "prevalence": 0.1,
+          "roc_auc": 0.11111111111111116,
+          "average_precision": 0.1111111111111111,
+          "brier_score": 0.14657791276150384,
+          "log_loss": 0.48329914195827517
+        }
+      },
+      "calibration_bins": [
+        {
+          "lower": 0.0,
+          "upper": 0.2,
+          "n": 7,
+          "mean_probability": 0.12239373462728785,
+          "observed_fraction": 0.14285714285714285
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.4,
+          "n": 17,
+          "mean_probability": 0.26705274824946845,
+          "observed_fraction": 0.058823529411764705
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.6000000000000001,
+          "n": 4,
+          "mean_probability": 0.5043099569830847,
+          "observed_fraction": 0.75
+        },
+        {
+          "lower": 0.6000000000000001,
+          "upper": 0.8,
+          "n": 1,
+          "mean_probability": 0.6511013912534498,
+          "observed_fraction": 0.0
+        },
+        {
+          "lower": 0.8,
+          "upper": 1.0,
+          "n": 1,
+          "mean_probability": 0.9221883331526272,
+          "observed_fraction": 1.0
+        }
+      ]
+    },
+    "federated": {
+      "overall": {
+        "n": 30,
+        "prevalence": 0.2,
+        "roc_auc": 0.7291666666666666,
+        "average_precision": 0.5027472527472527,
+        "brier_score": 0.1497563486308752,
+        "log_loss": 0.47281758323443523,
+        "mean_probability": 0.32398264321827164
+      },
+      "by_site": {
+        "BERLIN_NODE": {
+          "n": 10,
+          "prevalence": 0.3,
+          "roc_auc": 0.7619047619047619,
+          "average_precision": 0.5555555555555556,
+          "brier_score": 0.1904477522848105,
+          "log_loss": 0.5639802924602377
+        },
+        "CHENNAI_NODE": {
+          "n": 10,
+          "prevalence": 0.2,
+          "roc_auc": 1.0,
+          "average_precision": 1.0,
+          "brier_score": 0.0750379818894453,
+          "log_loss": 0.2943538026698598
+        },
+        "HYDERABAD_NODE": {
+          "n": 10,
+          "prevalence": 0.1,
+          "roc_auc": 0.11111111111111116,
+          "average_precision": 0.1111111111111111,
+          "brier_score": 0.1837833117183698,
+          "log_loss": 0.5601186545732082
+        }
+      },
+      "calibration_bins": [
+        {
+          "lower": 0.0,
+          "upper": 0.2,
+          "n": 7,
+          "mean_probability": 0.1699163600597024,
+          "observed_fraction": 0.14285714285714285
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.4,
+          "n": 15,
+          "mean_probability": 0.2859330691329826,
+          "observed_fraction": 0.06666666666666667
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.6000000000000001,
+          "n": 7,
+          "mean_probability": 0.4789319560283385,
+          "observed_fraction": 0.42857142857142855
+        },
+        {
+          "lower": 0.6000000000000001,
+          "upper": 0.8,
+          "n": 0,
+          "mean_probability": null,
+          "observed_fraction": null
+        },
+        {
+          "lower": 0.8,
+          "upper": 1.0,
+          "n": 1,
+          "mean_probability": 0.8885450469371218,
+          "observed_fraction": 1.0
+        }
+      ]
+    },
+    "secure_federated": {
+      "overall": {
+        "n": 30,
+        "prevalence": 0.2,
+        "roc_auc": 0.7291666666666666,
+        "average_precision": 0.5027472527472527,
+        "brier_score": 0.1497563486503206,
+        "log_loss": 0.4728175832857422,
+        "mean_probability": 0.3239826432552514
+      },
+      "by_site": {
+        "BERLIN_NODE": {
+          "n": 10,
+          "prevalence": 0.3,
+          "roc_auc": 0.7619047619047619,
+          "average_precision": 0.5555555555555556,
+          "brier_score": 0.19044775230560368,
+          "log_loss": 0.5639802925066338
+        },
+        "CHENNAI_NODE": {
+          "n": 10,
+          "prevalence": 0.2,
+          "roc_auc": 1.0,
+          "average_precision": 1.0,
+          "brier_score": 0.07503798190543012,
+          "log_loss": 0.2943538027213647
+        },
+        "HYDERABAD_NODE": {
+          "n": 10,
+          "prevalence": 0.1,
+          "roc_auc": 0.11111111111111116,
+          "average_precision": 0.1111111111111111,
+          "brier_score": 0.18378331173992796,
+          "log_loss": 0.560118654629228
+        }
+      },
+      "calibration_bins": [
+        {
+          "lower": 0.0,
+          "upper": 0.2,
+          "n": 7,
+          "mean_probability": 0.16991636009206326,
+          "observed_fraction": 0.14285714285714285
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.4,
+          "n": 15,
+          "mean_probability": 0.28593306919529266,
+          "observed_fraction": 0.06666666666666667
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.6000000000000001,
+          "n": 7,
+          "mean_probability": 0.4789319560207325,
+          "observed_fraction": 0.42857142857142855
+        },
+        {
+          "lower": 0.6000000000000001,
+          "upper": 0.8,
+          "n": 0,
+          "mean_probability": null,
+          "observed_fraction": null
+        },
+        {
+          "lower": 0.8,
+          "upper": 1.0,
+          "n": 1,
+          "mean_probability": 0.8885450469385817,
+          "observed_fraction": 1.0
+        }
+      ]
+    },
+    "centralized": {
+      "overall": {
+        "n": 30,
+        "prevalence": 0.2,
+        "roc_auc": 0.7291666666666666,
+        "average_precision": 0.5027472527472527,
+        "brier_score": 0.14976425496387,
+        "log_loss": 0.47278896385943775,
+        "mean_probability": 0.3239496686268508
+      },
+      "by_site": {
+        "BERLIN_NODE": {
+          "n": 10,
+          "prevalence": 0.3,
+          "roc_auc": 0.7619047619047619,
+          "average_precision": 0.5555555555555556,
+          "brier_score": 0.1905697690156683,
+          "log_loss": 0.5642158452848639
+        },
+        "CHENNAI_NODE": {
+          "n": 10,
+          "prevalence": 0.2,
+          "roc_auc": 1.0,
+          "average_precision": 1.0,
+          "brier_score": 0.07492307951035729,
+          "log_loss": 0.2940327587925427
+        },
+        "HYDERABAD_NODE": {
+          "n": 10,
+          "prevalence": 0.1,
+          "roc_auc": 0.11111111111111116,
+          "average_precision": 0.1111111111111111,
+          "brier_score": 0.18379991636558446,
+          "log_loss": 0.5601182875009064
+        }
+      },
+      "calibration_bins": [
+        {
+          "lower": 0.0,
+          "upper": 0.2,
+          "n": 7,
+          "mean_probability": 0.16985338972027827,
+          "observed_fraction": 0.14285714285714285
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.4,
+          "n": 15,
+          "mean_probability": 0.2858373375851924,
+          "observed_fraction": 0.06666666666666667
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.6000000000000001,
+          "n": 7,
+          "mean_probability": 0.4790035977047202,
+          "observed_fraction": 0.42857142857142855
+        },
+        {
+          "lower": 0.6000000000000001,
+          "upper": 0.8,
+          "n": 0,
+          "mean_probability": null,
+          "observed_fraction": null
+        },
+        {
+          "lower": 0.8,
+          "upper": 1.0,
+          "n": 1,
+          "mean_probability": 0.8889310830526482,
+          "observed_fraction": 1.0
+        }
+      ]
+    },
+    "prevalence_baseline": {
+      "overall": {
+        "n": 30,
+        "prevalence": 0.2,
+        "roc_auc": 0.5,
+        "average_precision": 0.2,
+        "brier_score": 0.1800694444444444,
+        "log_loss": 0.5492190474675673,
+        "mean_probability": 0.3416666666666667
+      },
+      "by_site": {
+        "BERLIN_NODE": {
+          "n": 10,
+          "prevalence": 0.3,
+          "roc_auc": 0.5,
+          "average_precision": 0.3,
+          "brier_score": 0.21173611111111107,
+          "log_loss": 0.6148066260438385
+        },
+        "CHENNAI_NODE": {
+          "n": 10,
+          "prevalence": 0.2,
+          "roc_auc": 0.5,
+          "average_precision": 0.2,
+          "brier_score": 0.18006944444444445,
+          "log_loss": 0.5492190474675672
+        },
+        "HYDERABAD_NODE": {
+          "n": 10,
+          "prevalence": 0.1,
+          "roc_auc": 0.5,
+          "average_precision": 0.1,
+          "brier_score": 0.14840277777777777,
+          "log_loss": 0.4836314688912958
+        }
+      },
+      "calibration_bins": [
+        {
+          "lower": 0.0,
+          "upper": 0.2,
+          "n": 0,
+          "mean_probability": null,
+          "observed_fraction": null
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.4,
+          "n": 30,
+          "mean_probability": 0.3416666666666667,
+          "observed_fraction": 0.2
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.6000000000000001,
+          "n": 0,
+          "mean_probability": null,
+          "observed_fraction": null
+        },
+        {
+          "lower": 0.6000000000000001,
+          "upper": 0.8,
+          "n": 0,
+          "mean_probability": null,
+          "observed_fraction": null
+        },
+        {
+          "lower": 0.8,
+          "upper": 1.0,
+          "n": 0,
+          "mean_probability": null,
+          "observed_fraction": null
+        }
+      ]
+    }
+  },
+  "privacy_comparison": {
+    "max_weight_difference": 3.799461092968137e-10,
+    "max_probability_difference": 1.373263169845984e-10,
+    "plain_training_seconds": 0.030091300002823118,
+    "secure_training_seconds": 0.10004190000108792
+  },
+  "limitations": [
+    "Small public sample and few positives make site AUC and calibration bins unstable.",
+    "Five calibration bins are descriptive; no recalibration was performed.",
+    "Public metrics are exploratory estimates, not a hidden-test or clinical performance guarantee.",
+    "Plaintext outcome-based diagnostics are outside the secure-aggregation privacy claim."
+  ]
+}
